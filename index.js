@@ -7,6 +7,18 @@ app.use(express.json());
 
 mongoose.connect('mongodb+srv://User3:qazxsw123@cluster0.gu3mc.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 
+DB = [
+    {
+    id : 1,
+    usernname : "jmjager",
+    color : "black",
+    role: "supervisor",
+    }
+];
+
+
+
+
 const dataSchema = new mongoose.Schema({
 location: {
     type: String,
@@ -31,6 +43,7 @@ percentage_full: {
 
 
 });
+
 
 const Data = mongoose.model('Data',dataSchema);
 
@@ -86,6 +99,53 @@ app.delete("/data/:id", (req,res) => {
             });
 
     });
+});
+
+//PROFILE
+app.get("/profile", function (request, response){
+    response.json(DB);
+});
+app.get("/profile/:id", function(request,response){
+
+    DB.array.forEach( (i) => {
+        
+        if (i["id"] == request.params.id){
+            var output = request.body;
+        }
+       
+        
+    });
+    response.json(output); 
+
+});
+
+app.post("/profile", function(request,response){
+const profile = {
+    id: DB.length +1,
+    username : request.body.username,
+    color: request.body.color,
+    role: request.body.role,
+    last_updated: Date.now().toString(),
+};
+DB.push (profile);
+response.json(profile);
+
+});
+
+app.patch("/profile/:id", function(req,res){
+
+    DB.forEach( (i) => {
+        
+        if (i["id"] == req.params.id){
+            i["username"] = req.body.username;
+            i["color"] = req.body.color;
+            i["role"] = req.body.role;
+            i["last_updated"] = Date.now().toString();
+        }
+        res.json(req.body);
+        
+    });
+
 });
 
 app.listen(3000);
